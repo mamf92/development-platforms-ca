@@ -1,10 +1,10 @@
-import { Router } from "express";
-import type { Request } from "express";
-import { pool } from "../database.js";
-import type { ArticleWithUser, CreateArticleBody } from "../interfaces.js";
-import { validateArticleData } from "../middleware/article-validation.js";
-import { authenticateToken } from "../middleware/auth-validation.js";
-import type { ResultSetHeader } from "mysql2";
+import { Router } from 'express';
+import type { Request } from 'express';
+import { pool } from '../database.js';
+import type { ArticleWithUser, CreateArticleBody } from '../interfaces.js';
+import { validateArticleData } from '../middleware/article-validation.js';
+import { authenticateToken } from '../middleware/auth-validation.js';
+import type { ResultSetHeader } from 'mysql2';
 
 const router = Router();
 
@@ -58,7 +58,7 @@ const router = Router();
  *                   type: string
  *                   example: "Failed to fetch articles"
  */
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(`
       SELECT articles.id, articles.title, articles.body, articles.category, articles.created_at, articles.user_id, users.email
@@ -70,8 +70,8 @@ router.get("/", async (req, res) => {
     const articles = rows as ArticleWithUser[];
     res.json(articles);
   } catch (error) {
-    console.error("Error", error);
-    res.status(500).json({ error: "Failed to fetch articles" });
+    console.error('Error', error);
+    res.status(500).json({ error: 'Failed to fetch articles' });
   }
 });
 
@@ -155,16 +155,19 @@ router.get("/", async (req, res) => {
  *                   example: "Failed to create article"
  */
 router.post(
-  "/",
+  '/',
   authenticateToken,
   validateArticleData,
-  async (req: Request<Record<string, never>, unknown, CreateArticleBody>, res) => {
+  async (
+    req: Request<Record<string, never>, unknown, CreateArticleBody>,
+    res
+  ) => {
     const { title, body, category } = req.body;
     const userId = req.user?.id;
 
     try {
       const [result] = await pool.execute<ResultSetHeader>(
-        "INSERT INTO articles (title, body, category, user_id) VALUES (?, ?, ?, ?)",
+        'INSERT INTO articles (title, body, category, user_id) VALUES (?, ?, ?, ?)',
         [title, body, category, userId]
       );
 
@@ -179,8 +182,8 @@ router.post(
       const article = (rows as ArticleWithUser[])[0];
       res.status(201).json(article);
     } catch (error) {
-      console.error("Error", error);
-      res.status(500).json({ error: "Failed to create article" });
+      console.error('Error', error);
+      res.status(500).json({ error: 'Failed to create article' });
     }
   }
 );

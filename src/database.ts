@@ -1,6 +1,6 @@
-import "dotenv/config"; 
-import mysql from "mysql2/promise";
-import type { Pool } from "mysql2/promise";
+import 'dotenv/config';
+import mysql from 'mysql2/promise';
+import type { Pool } from 'mysql2/promise';
 
 // Validate required environment variables
 const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
