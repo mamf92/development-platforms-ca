@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import authRoutes from "./routes/auth.js"
-import userRoutes from "./routes/users.js";
-import postRoutes from "./routes/posts.js";
+import articlesRoutes from "./routes/articles.js";
 
 dotenv.config();
 
@@ -32,8 +31,7 @@ app.use(cors());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
+app.use("/articles", articlesRoutes);
 app.use("/auth", authRoutes);
 
 app.listen(PORT, () => {

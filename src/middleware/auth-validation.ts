@@ -1,31 +1,23 @@
-import { z } from "zod"; 
-import type { Request, Response, NextFunction } from "express"; 
-import { verify } from "node:crypto";
+import { z } from "zod";
+import type { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.js";
 
 const registerSchema = z.object({
-    username: z
-    .string()
-    .min(3, "Username must be at least 3 characters")
-    .max(50, "Username must not exceed 50 characters"), 
-    email: z.email("Email must be a valid email"), 
-    password: z
+  email: z.email("Email must be a valid email"),
+  password: z
     .string()
     .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, "Passwrod must be at least 8 characters long and include uppercase, lowercase, number, and a special character"
-    ), 
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/,
+      "Passwrod must be at least 8 characters long and include uppercase, lowercase, number, and a special character"
+    ),
 });
 
 const loginSchema = z.object({
-    email: z.email("Email must be a valid email"), 
-    password: z.string(), 
+  email: z.email("Email must be a valid email"),
+  password: z.string(),
 });
 
-export function validateRegistration(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function validateRegistration(req: Request, res: Response, next: NextFunction) {
   const result = registerSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -36,13 +28,9 @@ export function validateRegistration(
   }
 
   next();
-};
+}
 
-export function validateLogin(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function validateLogin(req: Request, res: Response, next: NextFunction) {
   const result = loginSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -53,39 +41,35 @@ export function validateLogin(
   }
 
   next();
-};
+}
 
-// JWT Authentication Middleware 
-export function authenticateToken(
-    req: Request, 
-    res: Response, 
-    next: NextFunction
-) {
-    const authHeader = req.headers.authorization; 
+// JWT Authentication Middleware
+export function authenticateToken(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers.authorization;
 
-    if (!authHeader){
-        return res.status(401).json({
-            error: "Acces token required"
-        });
-    }
+  if (!authHeader) {
+    return res.status(401).json({
+      error: "Acces token required",
+    });
+  }
 
-    if (!authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({
-            error: "Token must be in format: Bearer <token>"
-        }); 
-    }
+  if (!authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Token must be in format: Bearer <token>",
+    });
+  }
 
-    const token = authHeader.substring(7); 
+  const token = authHeader.substring(7);
 
-    const payload = verifyToken(token); 
+  const payload = verifyToken(token);
 
-    if (!payload) {
-        return res.status(403).json({
-        error: "Invalid or expired token"
-        });
-    }
-    
-    req.user = { id: payload.userId }
+  if (!payload) {
+    return res.status(403).json({
+      error: "Invalid or expired token. Log in again or register first.",
+    });
+  }
 
-    next(); 
+  req.user = { id: payload.userId };
+
+  next();
 }

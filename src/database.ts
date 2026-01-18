@@ -1,4 +1,4 @@
-import "dotenv/config"; // Load environment variables first
+import "dotenv/config"; 
 import mysql from "mysql2/promise";
 import type { Pool } from "mysql2/promise";
 

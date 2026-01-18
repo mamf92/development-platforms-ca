@@ -1,25 +1,38 @@
 export interface User {
   id: number;
-  username: string;
   email: string;
-  password?: string; 
+  password?: string;
 }
 
 export interface UserResponse {
-    id: number;
-    username: string;
-    email: string;
+  id: number;
+  email: string;
 }
 
-export interface Post {
+export interface Article {
   id: number;
   title: string;
-  content: string;
+  body: string;
   user_id: number;
   created_at: string;
 }
 
-export interface PostWithUser extends Post {
-  username: string;
+export interface ArticleWithUser extends Article {
   email: string;
 }
+
+export type CreateArticleBody = {
+  title: string;
+  body: string;
+  category: string;
+};
+
+export type RegisterBody = {
+  email: string;
+  password: string;
+};
+
+export type LoginBody = {
+  email: string;
+  password: string;
+};
